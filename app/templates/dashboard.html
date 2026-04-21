@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini IDS Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">Security Monitoring</p>
+                <h1>Mini IDS Réseau</h1>
+                <p class="subtitle">Surveillance réseau et détection d’activités suspectes</p>
+            </div>
+
+            <div>
+                <a class="btn btn-primary" href="/report.txt" target="_blank">
+                    Télécharger le rapport TXT
+                </a>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Paquets analysés</div>
+                <div class="stat-value">{{ stats.total_packets }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Alertes</div>
+                <div class="stat-value">{{ stats.total_alerts }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Sniffer</div>
+                <div class="stat-value">
+                    {% if status.running %}
+                        Actif
+                    {% else %}
+                        Inactif
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <h2>Dernières alertes</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Source</th>
+                            <th>Destination</th>
+                            <th>Sévérité</th>
+                            <th>Score</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alert in stats.alerts %}
+                        <tr>
+                            <td>{{ alert["timestamp"] }}</td>
+                            <td>{{ alert["alert_type"] }}</td>
+                            <td>{{ alert["src_ip"] }}</td>
+                            <td>{{ alert["dst_ip"] }}</td>
+
+                            <td>
+                                <span class="badge {{ alert['severity'] }}">
+                                    {{ alert["severity"] }}
+                                </span>
+                            </td>
+
+                            <td>{{ alert["score"] }}</td>
+                            <td>{{ alert["description"] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>
